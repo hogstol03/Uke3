@@ -33,6 +33,20 @@ function getQuote(req, res, next) {
     res.status(HTTP_CODES.SUCCESS.OK).send(randomQuote).end();
 }
 
+function getSum(req, res, next) {
+    const a = parseInt(req.params.a, 10);
+    const b = parseInt(req.params.b, 10);
+
+    if (isNaN(a) || isNaN(b)) {
+        return res.status(400).send("Begge parametrene må være tall.");
+    }
+
+    const sum = a + b;
+
+    res.status(200).send(`Summen av ${a} og ${b} er ${sum}`).end();
+}
+
+server.post('/tmp/sum/:a/:b', getSum);
 server.get('/tmp/quote', getQuote);
 server.get("/", getRoot);
 server.get('/tmp/poem', getPoem);
