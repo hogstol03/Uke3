@@ -8,6 +8,20 @@ const decks = new Map();
 server.set('port', port);
 server.use(express.static('public'));
 
+// Legg til CORS-manualt: tillater forespørsler fra alle domener
+server.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // Tillat alle domener
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE'); // Tillat disse HTTP-metodene
+    res.header('Access-Control-Allow-Headers', 'Content-Type'); // Tillat Content-Type header
+
+    // Hvis metoden er OPTIONS, sender vi en 200 OK-respons uten å utføre resten av koden
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+    
+    next(); // Fortsett med resten av ruten
+});
+
 function getRoot(req, res, next) {
     res.status(HTTP_CODES.SUCCESS.OK).send('Hello World').end();
 }
@@ -66,6 +80,17 @@ server.get('/temp/deck/:deck_id/card', (req, res) => {
     decks.set(deck_id, deck);
 
     res.status(200).json(card);
+});
+
+server.get('/temp/deck/:deck_id', (req, res) => {
+    const { deck_id } = req.params;
+    
+    if (!decks.has(deck_id)) {
+        return res.status(404).send('Kortstokk ikke funnet.');
+    }
+
+    const deck = decks.get(deck_id);
+    res.status(200).json(deck);
 });
 
 server.get("/", getRoot);
