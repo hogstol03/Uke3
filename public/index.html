@@ -1,45 +1,28 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="no">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Card Deck Client</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Card Deck API</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <h1>Card Deck Shuffle</h1>
+    <h1>Kortstokk API</h1>
 
-    <!----------------------------->
-    <section>
-        <h2>Opprett ny kortstokk</h2>
-        <button id="createDeck">Opprett kortstokk</button>
-        <p id="deckId">Deck ID: <span>-</span></p>
-    </section>
+    <div id="deck-info">
+        <p>Deck ID: <span id="deck-id">Ingen kortstokk opprettet</span></p>
+        <button id="create-deck">Opprett ny kortstokk</button>
+        <button id="shuffle-deck" disabled>Stokk kortstokk</button>
+        <button id="draw-card" disabled>Trekk et kort</button>
+    </div>
 
-    <!----------------------------->
-    <section>
-        <h2>Stokk kortstokk</h2>
-        <input type="text" id="shuffleDeckId" placeholder="Deck ID">
-        <button id="shuffleDeck">Stokk</button>
-    </section>
-
-    <!----------------------------->
-    <section>
-        <h2>Se kortstokk</h2>
-        <input type="text" id="viewDeckId" placeholder="Deck ID">
-        <button id="viewDeck">Vis kortstokk</button>
-        <pre id="deckView">Ingen kortstokk valgt</pre>
-    </section>
-
-    <!----------------------------->
-    <section>
-        <h2>Trekke et kort</h2>
-        <input type="text" id="drawDeckId" placeholder="Deck ID">
-        <button id="drawCard">Trekk kort</button>
-        <p id="drawnCard">Kort: <span>-</span></p>
-    </section>
+    <div id="card-info">
+        <p id="card-details">Ingen kort trukket ennå.</p>
+        <img id="card-image" src="" alt="Kortbilde" />
+    </div>
 
     <script src="client.js"></script>
 </body>
