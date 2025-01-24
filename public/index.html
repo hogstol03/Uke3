@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Deck Client</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <h1>Card Deck Shuffle</h1>
+
+    <!----------------------------->
+    <section>
+        <h2>Opprett ny kortstokk</h2>
+        <button id="createDeck">Opprett kortstokk</button>
+        <p id="deckId">Deck ID: <span>-</span></p>
+    </section>
+
+    <!----------------------------->
+    <section>
+        <h2>Stokk kortstokk</h2>
+        <input type="text" id="shuffleDeckId" placeholder="Deck ID">
+        <button id="shuffleDeck">Stokk</button>
+    </section>
+
+    <!----------------------------->
+    <section>
+        <h2>Se kortstokk</h2>
+        <input type="text" id="viewDeckId" placeholder="Deck ID">
+        <button id="viewDeck">Vis kortstokk</button>
+        <pre id="deckView">Ingen kortstokk valgt</pre>
+    </section>
+
+    <!----------------------------->
+    <section>
+        <h2>Trekke et kort</h2>
+        <input type="text" id="drawDeckId" placeholder="Deck ID">
+        <button id="drawCard">Trekk kort</button>
+        <p id="drawnCard">Kort: <span>-</span></p>
+    </section>
+
+    <script src="client.js"></script>
+</body>
+
+</html>
