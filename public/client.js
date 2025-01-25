@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function () {
     const createDeckButton = document.getElementById('create-deck');
     const shuffleDeckButton = document.getElementById('shuffle-deck');
@@ -7,9 +6,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const cardDetailsElement = document.getElementById('card-details');
     const cardImageElement = document.getElementById('card-image');
 
-    // Funksjon for å opprette ny kortstokk
+    // -----------------------------
+    cardDetailsElement.textContent = '';
+    cardImageElement.src = '';
+    cardImageElement.style.display = 'none';
+
+    // -----------------------------
     createDeckButton.addEventListener('click', async () => {
-        const response = await fetch('http://localhost:8000/temp/deck', { // Full URL
+        const response = await fetch('http://localhost:8000/temp/deck', {
             method: 'POST',
         });
 
@@ -24,11 +28,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Funksjon for å stokke kortstokken
+    // -----------------------------
     shuffleDeckButton.addEventListener('click', async () => {
         const deckId = deckIdElement.textContent;
 
-        const response = await fetch(`http://localhost:8000/temp/deck/shuffle/${deckId}`, { // Full URL
+        const response = await fetch(`http://localhost:8000/temp/deck/shuffle/${deckId}`, {
             method: 'PATCH',
         });
 
@@ -39,18 +43,20 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Funksjon for å trekke et kort
+    // -----------------------------
     drawCardButton.addEventListener('click', async () => {
         const deckId = deckIdElement.textContent;
 
-        const response = await fetch(`http://localhost:8000/temp/deck/${deckId}/card`, { // Full URL
+        const response = await fetch(`http://localhost:8000/temp/deck/${deckId}/card`, {
             method: 'GET',
         });
 
         if (response.ok) {
             const card = await response.json();
+
             cardDetailsElement.textContent = `${card.rank} of ${card.suit}`;
             cardImageElement.src = `https://deckofcardsapi.com/static/img/${card.code}.png`;
+            cardImageElement.style.display = 'block';
         } else {
             alert('Feil ved trekking av kort.');
         }
