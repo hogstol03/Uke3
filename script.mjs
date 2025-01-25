@@ -8,18 +8,17 @@ const decks = new Map();
 server.set('port', port);
 server.use(express.static('public'));
 
-// Legg til CORS-manualt: tillater forespørsler fra alle domener
+// -----------------------------
 server.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*'); // Tillat alle domener
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE'); // Tillat disse HTTP-metodene
-    res.header('Access-Control-Allow-Headers', 'Content-Type'); // Tillat Content-Type header
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
 
-    // Hvis metoden er OPTIONS, sender vi en 200 OK-respons uten å utføre resten av koden
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
-    
-    next(); // Fortsett med resten av ruten
+
+    next();
 });
 
 function getRoot(req, res, next) {
@@ -34,7 +33,7 @@ function shuffleDeck(deck) {
     return deck;
 }
 
-// POST /temp/deck: Oppretter en ny kortstokk
+// -----------------------------
 server.post('/temp/deck', (req, res) => {
     const deckId = Math.random().toString(36).substring(2, 10);
     const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
@@ -51,7 +50,7 @@ server.post('/temp/deck', (req, res) => {
     res.status(201).json({ deck_id: deckId });
 });
 
-// PATCH /temp/deck/shuffle/:deck_id: Stokker kortstokk
+// -----------------------------
 server.patch('/temp/deck/shuffle/:deck_id', (req, res) => {
     const { deck_id } = req.params;
     if (!decks.has(deck_id)) {
@@ -63,7 +62,7 @@ server.patch('/temp/deck/shuffle/:deck_id', (req, res) => {
     res.status(200).send('Kortstokk stokket.');
 });
 
-// GET /temp/deck/:deck_id/card: Trekker et kort fra kortstokk
+// -----------------------------
 server.get('/temp/deck/:deck_id/card', (req, res) => {
     const { deck_id } = req.params;
     if (!decks.has(deck_id)) {
@@ -77,14 +76,19 @@ server.get('/temp/deck/:deck_id/card', (req, res) => {
 
     const randomIndex = Math.floor(Math.random() * deck.length);
     const [card] = deck.splice(randomIndex, 1);
-    decks.set(deck_id, deck);
 
+    const rankCode = card.rank === '10' ? '0' : card.rank[0];
+    const suitCode = card.suit[0];
+    card.code = `${rankCode}${suitCode}`.toUpperCase();
+
+    decks.set(deck_id, deck);
     res.status(200).json(card);
 });
 
+// -----------------------------
 server.get('/temp/deck/:deck_id', (req, res) => {
     const { deck_id } = req.params;
-    
+
     if (!decks.has(deck_id)) {
         return res.status(404).send('Kortstokk ikke funnet.');
     }
@@ -93,8 +97,9 @@ server.get('/temp/deck/:deck_id', (req, res) => {
     res.status(200).json(deck);
 });
 
+// -----------------------------
 server.get("/", getRoot);
 
 server.listen(server.get('port'), function () {
-    console.log('server running', server.get('port'));
+    console.log('Server kjører på port', server.get('port'));
 });
