@@ -1,11 +1,13 @@
 import express from "express";
 import HTTP_CODES from "./utils/httpCodes.mjs"; 
 import flashcardRoutes from "./routes/flashcards.mjs";
+import cors from "cors"; // Importer CORS-pakken
 
 const server = express();
 const port = process.env.PORT || 8000; 
 const decks = new Map();
 
+server.use(cors()); // Legg til CORS middleware her
 server.use(express.static("public"));
 server.use(express.json());
 
