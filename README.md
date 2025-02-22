@@ -18,10 +18,6 @@ Her er en oversikt over tilgjengelige API-endepunkter:
    - **Beskrivelse**: Stokk kortstokken med den angitte `deck_id`.
    - **Eksempel på respons**: `"Kortstokk stokket."`
 
-3. **GET** `/temp/deck/{deck_id}/card`
-   - **Beskrivelse**: Hent et tilfeldig kort fra kortstokken med `deck_id`.
-   - **Eksempel på respons**: `{ "suit": "Hearts", "rank": "King", "code": "KH" }`
-
 4. **GET** `/temp/deck/{deck_id}`
    - **Beskrivelse**: Hent hele kortstokken med `deck_id`.
    - **Eksempel på respons**: `[ { "suit": "Hearts", "rank": "King", "code": "KH" }, ... ]`
