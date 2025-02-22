@@ -41,13 +41,18 @@ router.patch("/:id", (req, res) => {
 // Slett et flashcard (Delete)
 router.delete("/:id", (req, res) => {
     const { id } = req.params;
+    console.log(`Received DELETE request for flashcard with ID: ${id}`);
+    
     const index = flashcards.findIndex(f => f.id == id);
     if (index === -1) {
+        console.log(`Flashcard with ID: ${id} not found.`);
         return res.status(404).json({ message: "Flashcard ikke funnet!" });
     }
 
     flashcards.splice(index, 1);
+    console.log(`Flashcard with ID: ${id} deleted.`);
     res.status(200).json({ message: "Flashcard slettet!" });
 });
+
 
 export default router;
