@@ -52,19 +52,26 @@ document.addEventListener('DOMContentLoaded', function () {
     // -----------------------------
     drawCardButton.addEventListener('click', async () => {
         const deckId = deckIdElement.textContent;
-
+    
         const response = await fetch(`${apiUrl}/temp/deck/${deckId}/card`, {
             method: 'GET',
         });
-
+    
         if (response.ok) {
             const card = await response.json();
-
-            cardDetailsElement.textContent = `${card.rank} of ${card.suit}`;
-            cardImageElement.src = `https://deckofcardsapi.com/static/img/${card.code}.png`;
-            cardImageElement.style.display = 'block';
+    
+            const cardDetails = `${card.rank} of ${card.suit}`;
+            cardDetailsElement.textContent = cardDetails;
+    
+            if (card.code) {
+                cardImageElement.src = `https://deckofcardsapi.com/static/img/${card.code}.png`;
+                cardImageElement.style.display = 'block';
+            } else {
+                alert('Kortet har ikke en gyldig kode.');
+            }
         } else {
             alert('Feil ved trekking av kort.');
         }
     });
+    
 });
