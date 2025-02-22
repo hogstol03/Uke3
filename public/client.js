@@ -11,9 +11,12 @@ document.addEventListener('DOMContentLoaded', function () {
     cardImageElement.src = '';
     cardImageElement.style.display = 'none';
 
+    // URL for API-en på Render
+    const apiUrl = 'https://applikasjonsutvikling-2.onrender.com';
+
     // -----------------------------
     createDeckButton.addEventListener('click', async () => {
-        const response = await fetch('http://localhost:8000/temp/deck', {
+        const response = await fetch(`${apiUrl}/temp/deck`, {
             method: 'POST',
         });
 
@@ -32,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
     shuffleDeckButton.addEventListener('click', async () => {
         const deckId = deckIdElement.textContent;
 
-        const response = await fetch(`http://localhost:8000/temp/deck/shuffle/${deckId}`, {
+        const response = await fetch(`${apiUrl}/temp/deck/shuffle/${deckId}`, {
             method: 'PATCH',
         });
 
@@ -47,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
     drawCardButton.addEventListener('click', async () => {
         const deckId = deckIdElement.textContent;
 
-        const response = await fetch(`http://localhost:8000/temp/deck/${deckId}/card`, {
+        const response = await fetch(`${apiUrl}/temp/deck/${deckId}/card`, {
             method: 'GET',
         });
 
