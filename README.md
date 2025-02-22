@@ -28,8 +28,6 @@ Her er en oversikt over tilgjengelige API-endepunkter:
    
 2. For å stokk kortstokken, send en **PATCH**-forespørsel til `/temp/deck/shuffle/{deck_id}` hvor `{deck_id}` er den unike ID-en til kortstokken.
 
-3. For å hente et tilfeldig kort, send en **GET**-forespørsel til `/temp/deck/{deck_id}/card`.
-
 4. For å hente hele kortstokken, send en **GET**-forespørsel til `/temp/deck/{deck_id}`.
 
 ### URL til produksjonsversjon (Render)
