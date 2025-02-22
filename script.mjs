@@ -88,8 +88,9 @@ server.delete("/temp/deck/:deck_id", (req, res) => {
 });
 
 // Start serveren
-server.listen(server.get("port"), () => {
-    console.log(`Server kjører på port ${server.get("port")}`);
+server.set("port", port);
+server.listen(port, () => {
+    console.log(`Server kjører på port ${port}`);
 });
 
 function shuffleDeck(deck) {
