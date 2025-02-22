@@ -1,118 +1,79 @@
 import express from "express";
-import HTTP_CODES from "./utils/httpCodes.mjs";
-import flashcardRoutes from "./routes/flashcards.mjs";
+import cors from "cors";
+import { v4 as uuidv4 } from "uuid";
 
-const server = express();
+const app = express();
 const port = process.env.PORT || 8000;
-const decks = new Map();
 
-server.set("port", port);
-server.use(express.static("public"));
-server.use(express.json()); 
+app.use(express.json());
+app.use(cors()); // Tillater frontend å hente fra backend
 
-// -----------------------------
-// CORS Middleware
-server.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
-    res.header("Access-Control-Allow-Headers", "Content-Type");
+let decks = {}; // Lagrer kortstokker i minnet
 
-    if (req.method === "OPTIONS") {
-        return res.status(200).end();
-    }
-    next();
-});
+// ====================== OPPRETT NY KORTSTOKK ======================
+app.post("/temp/deck", (req, res) => {
+    const deck_id = uuidv4();
+    const suits = ["♠", "♥", "♦", "♣"];
+    const values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
 
-// Koble til Flashcard API
-server.use("/api/flashcards", flashcardRoutes);
-
-// -----------------------------
-// Kortstokk-funksjonalitet
-
-// Opprett en ny kortstokk
-server.post("/temp/deck", (req, res) => {
-    const deckId = Math.random().toString(36).substring(2, 10);
-    const suits = ["Hearts", "Diamonds", "Clubs", "Spades"];
-    const ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"];
-
-    const deck = [];
+    const newDeck = [];
     for (const suit of suits) {
-        for (const rank of ranks) {
-            deck.push({ suit, rank });
+        for (const value of values) {
+            newDeck.push({ value, suit });
         }
     }
 
-    decks.set(deckId, deck);
-    res.status(201).json({ deck_id: deckId });
+    decks[deck_id] = {
+        deck_id,
+        shuffled: false,
+        remaining: 52,
+        cards: newDeck,
+    };
+
+    res.json({ deck_id });
 });
 
-// Stokk kortstokk
-function shuffleDeck(deck) {
-    for (let i = deck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [deck[i], deck[j]] = [deck[j], deck[i]]; // Bytt plass på kortene
-    }
-}
-
-server.patch("/temp/deck/shuffle/:deck_id", (req, res) => {
+// ====================== STOKK KORTSTOKKEN ======================
+app.patch("/temp/deck/shuffle/:deck_id", (req, res) => {
     const { deck_id } = req.params;
-    if (!decks.has(deck_id)) {
-        return res.status(404).json({ error: "Kortstokk ikke funnet." });
+    if (!decks[deck_id]) {
+        return res.status(404).json({ error: "Kortstokk ikke funnet" });
     }
 
-    const deck = decks.get(deck_id);
-    shuffleDeck(deck);
-    res.status(200).json({ message: "Kortstokk stokket." });
+    decks[deck_id].cards.sort(() => Math.random() - 0.5);
+    decks[deck_id].shuffled = true;
+
+    res.json({ message: "Kortstokken er stokket!" });
 });
 
-// Trekk et kort fra kortstokken
-server.get("/temp/deck/:deck_id/card", (req, res) => {
+// ====================== VIS KORTSTOKKEN ======================
+app.get("/temp/deck/:deck_id", (req, res) => {
     const { deck_id } = req.params;
-    if (!decks.has(deck_id)) {
-        return res.status(404).json({ error: "Kortstokk ikke funnet." });
+    if (!decks[deck_id]) {
+        return res.status(404).json({ error: "Kortstokk ikke funnet" });
     }
 
-    const deck = decks.get(deck_id);
-    if (deck.length === 0) {
-        return res.status(400).json({ error: "Kortstokken er tom." });
-    }
-
-    const randomIndex = Math.floor(Math.random() * deck.length);
-    const [card] = deck.splice(randomIndex, 1);
-
-    // Sørg for at kortet har en gyldig kode for visning
-    const rankCode = card.rank === "10" ? "0" : card.rank[0];
-    const suitCode = card.suit[0];
-    card.code = `${rankCode}${suitCode}`.toUpperCase();
-
-    decks.set(deck_id, deck);
-    res.status(200).json(card);
+    res.json(decks[deck_id].cards);
 });
 
-// Hente hele kortstokken
-server.get("/temp/deck/:deck_id", (req, res) => {
+// ====================== TREKK ET KORT ======================
+app.get("/temp/deck/:deck_id/card", (req, res) => {
     const { deck_id } = req.params;
-
-    if (!decks.has(deck_id)) {
-        return res.status(404).json({ error: "Kortstokk ikke funnet." });
+    if (!decks[deck_id]) {
+        return res.status(404).json({ error: "Kortstokk ikke funnet" });
     }
 
-    const deck = decks.get(deck_id);
-    res.status(200).json(deck);
-});
-
-// Slette kortstokk
-server.delete("/temp/deck/:deck_id", (req, res) => {
-    const { deck_id } = req.params;
-    if (!decks.has(deck_id)) {
-        return res.status(404).json({ error: "Kortstokk ikke funnet." });
+    if (decks[deck_id].remaining === 0) {
+        return res.status(400).json({ error: "Ingen flere kort igjen" });
     }
 
-    decks.delete(deck_id);
-    res.status(200).json({ message: "Kortstokk slettet." });
+    const drawnCard = decks[deck_id].cards.pop();
+    decks[deck_id].remaining--;
+
+    res.json(drawnCard);
 });
 
-// -----------------------------
-server.listen(server.get("port"), function () {
-    console.log("Server kjører på port", server.get("port"));
+// ====================== START SERVEREN ======================
+app.listen(port, () => {
+    console.log(`Server kjører på port ${port}`);
 });

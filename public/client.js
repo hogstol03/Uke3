@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const cardDetailsElement = document.getElementById('card-details');
     const cardImageElement = document.getElementById('card-image');
 
-    const apiUrl = "https://applikasjonsutvikling-2-pgq4.onrender.com/"; // <== Endre til riktig Render-URL
+    const apiUrl = "https://applikasjonsutvikling-2-pgq4.onrender.com/";
 
     createDeckButton.addEventListener('click', async () => {
         const response = await fetch(`${apiUrl}/temp/deck`, { method: 'POST' });
