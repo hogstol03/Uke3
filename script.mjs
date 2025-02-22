@@ -61,7 +61,8 @@ server.patch("/temp/deck/shuffle/:deck_id", (req, res) => {
 
     const deck = decks.get(deck_id);
     shuffleDeck(deck);
-    res.status(200).send("Kortstokk stokket.");
+    res.status(200).json({ message: "Kortstokk stokket." });
+
 });
 
 // Hente kort fra kortstokk
