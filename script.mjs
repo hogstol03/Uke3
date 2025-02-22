@@ -3,7 +3,7 @@ import HTTP_CODES from "./utils/httpCodes.mjs";
 import flashcardRoutes from "./routes/flashcards.mjs";
 
 const server = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 const decks = new Map();
 
 server.set("port", port);
@@ -89,6 +89,17 @@ server.get("/temp/deck/:deck_id", (req, res) => {
 
     const deck = decks.get(deck_id);
     res.status(200).json(deck);
+});
+
+// Slette kortstokk
+server.delete("/temp/deck/:deck_id", (req, res) => {
+    const { deck_id } = req.params;
+    if (!decks.has(deck_id)) {
+        return res.status(404).send("Kortstokk ikke funnet.");
+    }
+
+    decks.delete(deck_id);
+    res.status(200).send("Kortstokk slettet.");
 });
 
 // -----------------------------
