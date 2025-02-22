@@ -40,4 +40,4 @@ Her er en oversikt over tilgjengelige API-endepunkter:
 
 [https://applikasjonsutvikling-2.onrender.com](https://applikasjonsutvikling-2.onrender.com)
 
-Du kan teste API-et direkte på denne URL-en.
+Du kan teste API-et direkte på denne URL-en. Den fungere ikke som etterspurt derimot, men jeg har gjennomført en fosøk. De ulike foresøslene (PATCH, POST, GET) fungere ved testing i 'Insomnia', bortsett fra DELETE.
