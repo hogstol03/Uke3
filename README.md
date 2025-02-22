@@ -22,6 +22,10 @@ Her er en oversikt over tilgjengelige API-endepunkter:
    - **Beskrivelse**: Hent hele kortstokken med `deck_id`.
    - **Eksempel på respons**: `[ { "suit": "Hearts", "rank": "King", "code": "KH" }, ... ]`
   
+   5. **DELETE** `/temp/deck/{deck_id}`
+   - **Beskrivelse**: Slette hele kortstokken med `deck_id`.
+   - **Eksempel på respons**: `"Kortstokk slettet.`
+  
 ### Hvordan bruke API-et
 
 1. For å opprette en kortstokk, send en **POST**-forespørsel til `/temp/deck`. Dette vil returnere et `deck_id` som du bruker til å referere til kortstokken din.
