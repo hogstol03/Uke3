@@ -18,11 +18,11 @@ Her er en oversikt over tilgjengelige API-endepunkter:
    - **Beskrivelse**: Stokk kortstokken med den angitte `deck_id`.
    - **Eksempel på respons**: `"Kortstokk stokket."`
 
-4. **GET** `/temp/deck/{deck_id}`
+3. **GET** `/temp/deck/{deck_id}`
    - **Beskrivelse**: Hent hele kortstokken med `deck_id`.
    - **Eksempel på respons**: `[ { "suit": "Hearts", "rank": "King", "code": "KH" }, ... ]`
   
-   5. **DELETE** `/temp/deck/{deck_id}`
+4. **DELETE** `/temp/deck/{deck_id}`
    - **Beskrivelse**: Slette hele kortstokken med `deck_id`.
    - **Eksempel på respons**: `"Kortstokk slettet.`
   
