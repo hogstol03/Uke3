@@ -1,156 +1,64 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const createDeckButton = document.getElementById("create-deck");
-    const shuffleDeckButton = document.getElementById("shuffle-deck");
-    const drawCardButton = document.getElementById("draw-card");
-    const showDeckButton = document.getElementById("show-deck");
-    const deckIdSpan = document.getElementById("deck-id");
-    const cardDetails = document.getElementById("card-details");
-    const cardImage = document.getElementById("card-image");
+document.addEventListener('DOMContentLoaded', function () {
+    const createDeckButton = document.getElementById('create-deck');
+    const shuffleDeckButton = document.getElementById('shuffle-deck');
+    const drawCardButton = document.getElementById('draw-card');
+    const showDeckButton = document.getElementById('show-deck');
+    const deckIdElement = document.getElementById('deck-id');
+    const cardDetailsElement = document.getElementById('card-details');
+    const cardImageElement = document.getElementById('card-image');
 
-    let deckId = null;
+    const apiUrl = "https://applikasjonsutvikling-2-pgq4.onrender.com/"; // <== Endre til riktig Render-URL
 
-    // ===================== OPPRETT NY KORTSTOKK =====================
-    createDeckButton.addEventListener("click", async () => {
-        const response = await fetch("https://applikasjonsutvikling-2.onrender.com/temp/deck", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                shuffled: true,
-                remaining: 52,
-            }),
-        });
-
-        if (!response.ok) {
-            alert(`Feil: ${response.status} - ${response.statusText}`);
-            return;
-        }
-
-        const data = await response.json();
-        deckId = data.deck_id;
-        deckIdSpan.textContent = deckId;
-
-        // Aktiver knapper etter at en kortstokk er opprettet
-        shuffleDeckButton.disabled = false;
-        drawCardButton.disabled = false;
-
-        console.log("Kortstokk opprettet:", deckId);
-    });
-
-    // ===================== STOKK KORTSTOKKEN =====================
-    shuffleDeckButton.addEventListener("click", async () => {
-        if (!deckId) {
-            alert("Du må opprette en kortstokk først.");
-            return;
-        }
-
-        const response = await fetch(`https://applikasjonsutvikling-2.onrender.com/temp/deck/shuffle/${deckId}`, {
-            method: "PATCH",
-        });
-
-        if (!response.ok) {
-            alert(`Feil: ${response.status} - ${response.statusText}`);
-            return;
-        }
-
-        alert("Kortstokken er stokket!");
-        console.log("Kortstokk stokket:", deckId);
-    });
-
-    // ===================== TREKK ET KORT =====================
-    drawCardButton.addEventListener("click", async () => {
-        if (!deckId) {
-            alert("Du må opprette en kortstokk først.");
-            return;
-        }
-
-        const response = await fetch(`https://applikasjonsutvikling-2.onrender.com/temp/deck/${deckId}/card`, {
-            method: "GET",
-        });
-
-        if (!response.ok) {
-            alert(`Feil: ${response.status} - ${response.statusText}`);
-            return;
-        }
-
-        const data = await response.json();
-        const card = data.drawnCard;
-
-        if (card) {
-            let rank = card.rank;
-            let suit = card.suit;
-            let imageUrl = card.image; // Antar at API-et returnerer en bilde-url for kortet
-
-            cardDetails.textContent = `${rank} of ${suit}`;
-            cardImage.src = imageUrl;
-            cardImage.alt = `${rank} of ${suit}`;
-
-            // Endre fargen på teksten basert på kortets farge
-            if (suit === "Hearts" || suit === "Diamonds") {
-                cardDetails.style.color = "red";
-            } else {
-                cardDetails.style.color = "black";
-            }
-
-            console.log("Trukket kort:", card);
+    createDeckButton.addEventListener('click', async () => {
+        const response = await fetch(`${apiUrl}/temp/deck`, { method: 'POST' });
+        if (response.ok) {
+            const data = await response.json();
+            deckIdElement.textContent = data.deck_id;
+            shuffleDeckButton.disabled = false;
+            drawCardButton.disabled = false;
         } else {
-            alert("Ingen flere kort igjen i kortstokken.");
+            alert('Feil ved oppretting av kortstokk.');
         }
     });
 
-    // ===================== VIS KORTSTOKKEN =====================
-    showDeckButton.addEventListener("click", async () => {
-        if (!deckId) {
+    shuffleDeckButton.addEventListener('click', async () => {
+        const deckId = deckIdElement.textContent;
+        const response = await fetch(`${apiUrl}/temp/deck/shuffle/${deckId}`, { method: 'PATCH' });
+        if (response.ok) {
+            alert("Kortstokk stokket!");
+        } else {
+            alert('Feil ved stokkingen av kortstokken.');
+        }
+    });
+
+    drawCardButton.addEventListener('click', async () => {
+        const deckId = deckIdElement.textContent;
+        if (!deckId || deckId === "Ingen kortstokk opprettet") {
             alert("Du må opprette en kortstokk først.");
             return;
         }
 
-        const response = await fetch(`https://applikasjonsutvikling-2.onrender.com/temp/deck/${deckId}`, {
-            method: "GET",
-        });
-
-        if (!response.ok) {
-            alert(`Feil: ${response.status} - ${response.statusText}`);
-            return;
+        const response = await fetch(`${apiUrl}/temp/deck/${deckId}/card`, { method: 'GET' });
+        if (response.ok) {
+            const card = await response.json();
+            cardDetailsElement.textContent = `${card.rank} of ${card.suit}`;
+            cardImageElement.src = `https://deckofcardsapi.com/static/img/${card.code}.png`;
+            cardImageElement.style.display = 'block';
+        } else {
+            alert('Feil ved trekking av kort.');
         }
+    });
 
-        const deck = await response.json();
+    showDeckButton.addEventListener('click', async () => {
+        const deckId = deckIdElement.textContent;
+        const response = await fetch(`${apiUrl}/temp/deck/${deckId}`, { method: 'GET' });
 
-        // Finn eller opprett et div-element for å vise kortene
-        let deckContainer = document.getElementById("deck-container");
-        if (!deckContainer) {
-            deckContainer = document.createElement("div");
-            deckContainer.id = "deck-container";
-            document.body.appendChild(deckContainer);
+        if (response.ok) {
+            const deck = await response.json();
+            console.log("Kortstokk:", deck);
+            alert("Kortstokken vises i konsollen.");
+        } else {
+            alert('Feil ved visning av kortstokk.');
         }
-
-        deckContainer.innerHTML = "<h3>Innhold i kortstokken:</h3>";
-
-        // Gå gjennom alle kortene og vis dem
-        deck.forEach(card => {
-            let cardElement = document.createElement("p");
-
-            if (card.rank && card.suit) {
-                let rank = card.rank;
-                let suit = card.suit;
-
-                if (suit === "Hearts" || suit === "Diamonds") {
-                    cardElement.style.color = "red";
-                } else {
-                    cardElement.style.color = "black";
-                }
-
-                cardElement.textContent = `${rank} of ${suit}`;
-            } else {
-                console.error("Feil format på kort:", card);
-                cardElement.textContent = "Feil: Kunne ikke vise kort";
-            }
-
-            deckContainer.appendChild(cardElement);
-        });
-
-        deckContainer.style.display = "block";
-        console.log("Kortstokk vist:", deck);
     });
 });
