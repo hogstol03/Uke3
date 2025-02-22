@@ -34,17 +34,20 @@ document.addEventListener('DOMContentLoaded', function () {
     // -----------------------------
     shuffleDeckButton.addEventListener('click', async () => {
         const deckId = deckIdElement.textContent;
-
+    
         const response = await fetch(`${apiUrl}/temp/deck/shuffle/${deckId}`, {
             method: 'PATCH',
         });
-
+    
         if (response.ok) {
-            alert('Kortstokken er stokket!');
+            // Les responsen som tekst, ikke JSON
+            const message = await response.text();
+            alert(message); // "Kortstokk stokket."
         } else {
             alert('Feil ved stokkingen av kortstokken.');
         }
     });
+    
 
     // -----------------------------
     drawCardButton.addEventListener('click', async () => {
