@@ -6,19 +6,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const cardDetailsElement = document.getElementById('card-details');
     const cardImageElement = document.getElementById('card-image');
 
-    // -----------------------------
+    // Tøm innhold ved start
     cardDetailsElement.textContent = '';
     cardImageElement.src = '';
     cardImageElement.style.display = 'none';
 
-    // URL for API-en på Render
+    // API URL
     const apiUrl = 'https://applikasjonsutvikling-2.onrender.com';
 
-    // -----------------------------
+    // Opprett ny kortstokk
     createDeckButton.addEventListener('click', async () => {
-        const response = await fetch(`${apiUrl}/temp/deck`, {
-            method: 'POST',
-        });
+        const response = await fetch(`${apiUrl}/temp/deck`, { method: 'POST' });
 
         if (response.ok) {
             const data = await response.json();
@@ -31,39 +29,36 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // -----------------------------
+    // Stokk kortstokken
     shuffleDeckButton.addEventListener('click', async () => {
         const deckId = deckIdElement.textContent;
-    
-        const response = await fetch(`${apiUrl}/temp/deck/shuffle/${deckId}`, {
-            method: 'PATCH',
-        });
-    
+
+        const response = await fetch(`${apiUrl}/temp/deck/shuffle/${deckId}`, { method: 'PATCH' });
+
         if (response.ok) {
-            // Les responsen som tekst, ikke JSON
-            const message = await response.text();
+            const message = await response.text(); // Les som tekst
             alert(message); // "Kortstokk stokket."
         } else {
             alert('Feil ved stokkingen av kortstokken.');
         }
     });
-    
 
-    // -----------------------------
+    // Trekk et kort
     drawCardButton.addEventListener('click', async () => {
         const deckId = deckIdElement.textContent;
-    
-        const response = await fetch(`${apiUrl}/temp/deck/${deckId}/card`, {
-            method: 'GET',
-        });
-    
+
+        if (!deckId || deckId === "Ingen kortstokk opprettet") {
+            alert("Du må opprette en kortstokk først.");
+            return;
+        }
+
+        const response = await fetch(`${apiUrl}/temp/deck/${deckId}/card`, { method: 'GET' });
+
         if (response.ok) {
             const card = await response.json();
-    
-            const cardDetails = `${card.rank} of ${card.suit}`;
-            cardDetailsElement.textContent = cardDetails;
-    
-            if (card.code) {
+
+            if (card && card.rank && card.suit) {
+                cardDetailsElement.textContent = `${card.rank} of ${card.suit}`;
                 cardImageElement.src = `https://deckofcardsapi.com/static/img/${card.code}.png`;
                 cardImageElement.style.display = 'block';
             } else {
@@ -73,5 +68,4 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Feil ved trekking av kort.');
         }
     });
-    
 });
