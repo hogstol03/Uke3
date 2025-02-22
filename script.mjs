@@ -44,6 +44,14 @@ server.post("/temp/deck", (req, res) => {
     res.status(201).json({ deck_id: deckId });
 });
 
+
+function shuffleDeck(deck) {
+    for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]]; // Bytt plass på kortene
+    }
+}
+
 // Stokke kortstokk
 server.patch("/temp/deck/shuffle/:deck_id", (req, res) => {
     const { deck_id } = req.params;
