@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if ("serviceWorker" in navigator) {
         navigator.serviceWorker
-            .register("/service-worker.js")
+            .register("/public/serviceWorker.js")
             .then(() => console.log("Service Worker registered"))
             .catch((error) =>
                 console.error("Service Worker registration failed:", error)
