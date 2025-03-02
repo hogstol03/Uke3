@@ -11,6 +11,10 @@ server.use(cors()); // Legg til CORS middleware her
 server.use(express.static("public"));
 server.use(express.json());
 
+server.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+}); 
+
 // Koble til Flashcard API
 server.use("/api/flashcards", flashcardRoutes);
 
