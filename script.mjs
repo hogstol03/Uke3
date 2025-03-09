@@ -14,10 +14,7 @@ console.log("DATABASE_URL:", process.env.DATABASE_URL);
 // Oppretter databaseforbindelse
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false,
-        ca: fs.readFileSync('/path/to/ca-certificate.crt').toString()
-    }
+    ssl: { rejectUnauthorized: false }
 });
 
 const server = express();
