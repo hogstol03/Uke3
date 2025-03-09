@@ -1,19 +1,34 @@
+import pkg from 'pg';
+const { Pool } = pkg;
+
+import dotenv from 'dotenv';
 import express from "express";
 import HTTP_CODES from "./utils/httpCodes.mjs"; 
 import flashcardRoutes from "./routes/flashcards.mjs";
-import cors from "cors"; // Importer CORS-pakken
+import cors from "cors";
+
+dotenv.config();
+
+console.log("DATABASE_URL:", process.env.DATABASE_URL);
+
+// Oppretter databaseforbindelse
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+});
+
 
 const server = express();
-const port = process.env.PORT || 8000; 
+const port = process.env.PORT || 8000;
 const decks = new Map();
 
 server.use(cors()); // Legg til CORS middleware her
 server.use(express.static("public"));
 server.use(express.json());
 
-server.listen(port, () => {
+server.listen(port, "127.0.0.1", () => {
     console.log(`Server running on port ${port}`);
-}); 
+});
 
 // Koble til Flashcard API
 server.use("/api/flashcards", flashcardRoutes);
