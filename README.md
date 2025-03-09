@@ -1,41 +1,14 @@
-# UKE 8 - Strukturere og Eksterne servere
+# UKE 9 - PWA
 
-Dette er et API for å opprette, stokke og hente kort fra en kortstokk. API-et gir deg muligheten til å opprette en kortstokk, stokke den og hente ett kort eller hele kortstokken.
+Dette prosjektet er en Progressiv Web App (PWA) laget med HTML, CSS, JavaScript og Express. Applikasjonen bruker en Service Worker for å cache ressurser.
 
-## Hvordan teste API-et
+## Hvordan bruke prosjektet
+1. Kjøre lokalt med Liver Server:
 
-For testing av API-et kan du bruke **Insomnia** eller **Postman**. Eksportfilene ligger i mappen `api-testing` i repoet.
+For å få applikasjonen til å fungere, åpne index.html-filen i Live Server i VSCode.
 
-### API-endepunkter
+2. Kjøre applikasjonen på server (node/express):
 
-Her er en oversikt over tilgjengelige API-endepunkter:
-
-1. **POST** `/temp/deck`
-   - **Beskrivelse**: Opprett en ny kortstokk.
-   - **Eksempel på respons**: `{ "deck_id": "abc123" }`
-
-2. **PATCH** `/temp/deck/shuffle/{deck_id}`
-   - **Beskrivelse**: Stokk kortstokken med den angitte `deck_id`.
-   - **Eksempel på respons**: `"Kortstokk stokket."`
-
-3. **GET** `/temp/deck/{deck_id}`
-   - **Beskrivelse**: Hent hele kortstokken med `deck_id`.
-   - **Eksempel på respons**: `[ { "suit": "Hearts", "rank": "King", "code": "KH" }, ... ]`
-  
-4. **DELETE** `/temp/deck/{deck_id}`
-   - **Beskrivelse**: Slette hele kortstokken med `deck_id`.
-   - **Eksempel på respons**: `"Kortstokk slettet.`
-  
-### Hvordan bruke API-et
-
-1. For å opprette en kortstokk, send en **POST**-forespørsel til `/temp/deck`. Dette vil returnere et `deck_id` som du bruker til å referere til kortstokken din.
-   
-2. For å stokk kortstokken, send en **PATCH**-forespørsel til `/temp/deck/shuffle/{deck_id}` hvor `{deck_id}` er den unike ID-en til kortstokken.
-
-4. For å hente hele kortstokken, send en **GET**-forespørsel til `/temp/deck/{deck_id}`.
-
-### URL til produksjonsversjon (Render)
-
-[https://applikasjonsutvikling-2.onrender.com](https://applikasjonsutvikling-2.onrender.com)
-
-Du kan teste API-et direkte på denne URL-en. Den fungere ikke som etterspurt derimot, men jeg har gjennomført et forsøk. De ulike forespørslene (PATCH, POST, GET) fungere ved testing i 'Insomnia', bortsett fra DELETE. (Hadde problemer med å tolke oppgaveteksten og hva den egentlig spurte om.)
+Jeg fikk noen problemer med å få serveren til å kjøre på en spesifikk port (f.eks. 8000 eller 8080).
+Når jeg prøvde å starte applikasjonen ved å bruke kommandoen node script.mjs i terminalen, fikk jeg feilen EADDRINUSE: address already in use. Dette skjer når porten allerede er i bruk.
+Jeg forsøkte å endre porten, men møtte lignende problemer. Fant ut at dette kunne bli løst ved å stoppe eventuelle kjørende prosesser på portene før oppstart, men fikk det fremdeles ikke til.
