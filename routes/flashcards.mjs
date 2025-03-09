@@ -29,8 +29,10 @@ router.post("/", async (req, res) => {
         res.status(201).json(result.rows[0]);
     } catch (err) {
         console.error("Error creating flashcard:", err);
+        console.error("Detailed error:", err.stack);
         res.status(500).json({ message: "Error creating flashcard" });
     }
+    
 });
 
 // Hent alle flashcards (Read)
